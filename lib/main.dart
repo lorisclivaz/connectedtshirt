@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -15,20 +14,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'T-shirt connected',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
+
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'T-shirt connected'),
     );
   }
 }
@@ -36,14 +27,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -52,42 +35,62 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
+  //Variable that get all the data from the t-shirt
+  String _data = "";
+
+  //List that will stored one line of data per seconde
   late List<String> temp;
+
+  //Variable for each part of data
   var time;
   var heartFrequency;
   var temperature;
   var humidity;
 
 
-
+  //Methode that will connect the application with the web server in this ip (192.168.4.2) and get the data
   void getData() async {
+
+    //Connect to the server IP
     Response response = await get(Uri.parse('http://192.168.4.2'));
 
+    //Store the response body on the list with a split function
     temp = response.body.split(" ");
 
 
+    //Increment the variables to those different variables
     time = temp[0];
     heartFrequency = temp[1];
     temperature = temp[2];
     humidity = temp[3];
 
+    //Print on the console the data
     print("Data : "+ time.toString()+ "  "+ heartFrequency.toString()
     +"  "+ temperature.toString()+"  "+ humidity.toString());
+
+
+    //We set the state of the label that show the data in real time to the application
+    setState(() {
+
+      _data = "Data : "+ time.toString()+ "  "+ heartFrequency.toString()
+          +"  "+ temperature.toString()+"  "+ humidity.toString();
+
+
+    });
     
   }
 
+  //InitState methode that launch the code when the application in starting
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    print("Init state");
-
-
+    //We increment a timer every 2 secondes the get the data and we put the get data methode inside the timer
     Timer mytimer = Timer.periodic(Duration(seconds: 2), (timer) {
-      print("On rentre dans le timer");
+
+      //Methode that get all data
       getData();
     });
   }
@@ -97,21 +100,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // TODO: implement dispose
     super.dispose();
 
-
-  }
-
-  void _incrementCounter() {
-
-    print("On passe dans la méthode d'incrémentation");
-    getData();
-
-    setState(() {
-
-      _counter++;
-
-
-
-    });
   }
 
 
@@ -132,20 +120,15 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'You can see de t-shirt data in real time',
             ),
             Text(
-              '$_counter',
+              '$_data',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

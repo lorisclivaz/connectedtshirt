@@ -1,9 +1,13 @@
 import 'dart:async';
+import 'package:connectedtshirt/database.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -49,6 +53,9 @@ class _MyHomePageState extends State<MyHomePage> {
   var humidity;
 
 
+  Database database = new Database();
+
+
   //Methode that will connect the application with the web server in this ip (192.168.4.2) and get the data
   void getData() async {
 
@@ -69,13 +76,19 @@ class _MyHomePageState extends State<MyHomePage> {
     print("Data : "+ time.toString()+ "  "+ heartFrequency.toString()
     +"  "+ temperature.toString()+"  "+ humidity.toString());
 
+    //Create object to send the data
+    dataTemp myTemp = dataTemp(time, heartFrequency, temperature, humidity);
+
+
+    //We send the data to firebase event we didn't have the wifi
+    database.sendData(myTemp);
+
 
     //We set the state of the label that show the data in real time to the application
     setState(() {
 
       _data = "Data : "+ time.toString()+ "  "+ heartFrequency.toString()
           +"  "+ temperature.toString()+"  "+ humidity.toString();
-
 
     });
     
@@ -86,6 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
 
     //We increment a timer every 2 secondes the get the data and we put the get data methode inside the timer
     Timer mytimer = Timer.periodic(Duration(seconds: 2), (timer) {
@@ -103,7 +117,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  
   @override
   Widget build(BuildContext context) {
 
@@ -131,6 +144,39 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+//Create the class for implement an object
+class dataTemp
+{
+
+  //Variables of datatemp class
+  var timeTemp;
+  var heartFrequencyTemp;
+  var temperatureTemp;
+  var humidityTemp;
+
+
+  //Constructor
+  dataTemp(this.timeTemp, this.heartFrequencyTemp, this.temperatureTemp, this.humidityTemp);
+  
+
+
+  //Mapping the data and convert it to string to send into the realtime database
+  dataTemp.fromJson(Map<dynamic, dynamic> json)
+      : timeTemp = DateTime.parse(json['Time'] as String),
+        heartFrequencyTemp = json['HeartFrequency'] as String,
+        temperatureTemp = json['Temperature'] as String,
+        humidityTemp = json['Humidity'] as String;
+
+  Map<dynamic, dynamic> toJson() => <dynamic, dynamic>{
+    'Time': timeTemp.toString(),
+    'HeartFrequency': heartFrequencyTemp,
+    'Temperature': temperatureTemp,
+    'Humidity': humidityTemp
+  };
+
+
 }
 
 

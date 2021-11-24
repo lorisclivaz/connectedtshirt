@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "990586809402",
+    "firebase_url": "https://t-shirt-eb6d3-default-rtdb.firebaseio.com",
+    "project_id": "t-shirt-eb6d3",
+    "storage_bucket": "t-shirt-eb6d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990586809402:android:a10b536c61582f985ad903",
+        "android_client_info": {
+          "package_name": "com.project.connectedtshirt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990586809402-ggiqedgf5v3v77e745tjircbg5vcuijq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-8zVwdGkR6GpmWMLz6211Khtzo6Nu6Vk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "990586809402-ggiqedgf5v3v77e745tjircbg5vcuijq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
